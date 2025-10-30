@@ -19,7 +19,7 @@ print("-" * 30 + "\n")
 state_code = input("Enter short state: ").upper()
 while state_code != "":
     try:
-        print(state_code, "is", CODE_TO_NAME[state_code])
+        print(state_code, "is", CODE_TO_NAME[state_code])  # Try to return CODE_TO_NAME[state_code]
     except KeyError:
         print("Invalid short state")
     state_code = input("Enter short state: ").upper()
