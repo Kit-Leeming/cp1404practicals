@@ -4,12 +4,12 @@ Wimbledon data handler
 Estimated: 45 mins
 Actual:
 """
-from operator import truediv
 
 FILE_NAME = "wimbledon.csv"
 
 
 def main():
+    """Display wimbledon championship data from a csv"""
     wimbledon_results = read_csv(FILE_NAME)
     champion_to_wins = count_champion_wins(wimbledon_results)
     winning_countries = find_winning_countries(wimbledon_results)
@@ -23,8 +23,8 @@ def main():
     print(", ".join(winning_countries))
 
 
-def read_csv(file_name, skip_header: bool = True):
-    """ Reads csv file and returns a list of lists of each row and column """
+def read_csv(file_name, skip_header=True):
+    """Read csv file and returns a list of lists of each row and column."""
     with open(file_name, "r", encoding="utf-8-sig") as in_file:
         if skip_header:
             in_file.readline()
@@ -32,8 +32,8 @@ def read_csv(file_name, skip_header: bool = True):
 
 
 def count_champion_wins(wimbledon_results: list):
-    """ Calculates number of wins per champion from a list structured
-    like [[Year, Country, Champion, Country, Runner-up, Score], [...]] """
+    """Calculate number of wins per champion from a list structured
+    like [[Year, Country, Champion, Country, Runner-up, Score], [...]]."""
     champion_to_wins = {}
     for match in wimbledon_results:
         champion = match[2]
@@ -42,7 +42,7 @@ def count_champion_wins(wimbledon_results: list):
 
 
 def find_winning_countries(wimbledon_results: list):
-    """ Find the set of countries that have won a championship """
+    """Find the set of countries that have won a championship."""
     winning_countries = set()
     for match in wimbledon_results:
         winning_countries.add(match[1])
