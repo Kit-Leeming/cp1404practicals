@@ -1,9 +1,11 @@
 """CP1404/CP5632 Practical - guitar class."""
 
+CURRENT_YEAR = 2025
+VINTAGE_AGE = 50
+
 
 class Guitar:
     """Represent a Guitar object."""
-    current_year = 2025
 
     def __init__(self, name="", year=0, cost=0.0):
         """Initialise a guitar instance"""
@@ -17,9 +19,8 @@ class Guitar:
 
     def get_age(self):
         """Calculate the age of guitar"""
-        return self.current_year - self.year
+        return CURRENT_YEAR - self.year
 
     def is_vintage(self):
         """Determine if guitar is vintage"""
-        return self.get_age() >= 50
-
+        return self.get_age() >= VINTAGE_AGE

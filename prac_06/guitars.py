@@ -22,7 +22,7 @@ def display_guitars(my_guitars):
     maximum_cost_length = max(len(str(guitar.cost)) for guitar in my_guitars)
     print("These are my guitars:")
     for i, guitar in enumerate(my_guitars, 1):
-        vintage_string = "(vintage)" if guitar.get_age() >= 50 else ""
+        vintage_string = "(vintage)" if guitar.is_vintage() else ""
         print(f"Guitar {i}{":":<2} {guitar.name:>{maximum_name_length}} ({guitar.year}), worth $ "
               f"{guitar.cost:,>{maximum_cost_length}} {vintage_string}")
 
