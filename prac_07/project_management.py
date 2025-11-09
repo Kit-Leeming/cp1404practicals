@@ -1,5 +1,6 @@
 """CP1404 Practical
-Project class
+Estimated: 1:15
+Actual: 2:00
 """
 
 import datetime
@@ -10,6 +11,7 @@ REMOVE_EXISTING_PROJECTS_ON_LOAD = False
 
 
 def main():
+    """Project management software to store, add, and update project details"""
     print("Welcome to Pythonic Project Management")
     projects = []
     load_projects(projects, DEFAULT_FILE_NAME)
@@ -18,7 +20,6 @@ def main():
     user_input = input(">>> ").upper()
 
     while user_input != "Q":
-
         if user_input == "L":  # Load new projects into memory
             file_name = input("Enter filename to load data from: ")
             if REMOVE_EXISTING_PROJECTS_ON_LOAD:
@@ -37,18 +38,18 @@ def main():
                 print("Complete projects: ")
                 display_projects(complete_projects)
 
-        elif user_input == "F":
+        elif user_input == "F":  # Filter projects from a date
             filter_date = get_valid_date("Show projects that start after date (dd/mm/yy): ")
             filtered_projects = []
             for project in projects:
-                if project.is_start_date_after(filter_date):
+                if project.is_start_date_after(filter_date):  # Add project to filtered_projects if after filter date
                     filtered_projects.append(project)
             display_projects(filtered_projects)
 
-        elif user_input == "A":
+        elif user_input == "A":  # Add project to projects
             add_project(projects)
 
-        elif user_input == "U":
+        elif user_input == "U":  # Update project priority or percentage complete
             display_projects(projects, True)
             project_choice = get_valid_positive_number("Project choice: ", int)
             display_projects(projects[project_choice])
@@ -71,6 +72,7 @@ def main():
 
 
 def add_project(projects):
+    """Add project to project list"""
     name = input("Let's add a new project\nName: ")
     start_date = get_valid_date("Start date(dd/mm/yy): ")
     priority = get_valid_positive_number("Priority: ", int)
@@ -80,6 +82,8 @@ def add_project(projects):
 
 
 def load_projects(projects, file_name, skip_header=True):
+    """Load project from .txt file with format:
+     Name \t Start Date \t Priority \t Cost Estimate \t Completion Percentage"""
     with open(file_name, "r") as in_file:
         if skip_header:
             in_file.readline()  # Skip header
@@ -104,21 +108,23 @@ def save_projects(projects, file_name,
 
 
 def display_menu():
+    """Display menu"""
     print(f"- (L)oad projects\n- (S)ave projects\n- (D)isplay projects\n- (F)ilter projects by date\n"
           f"- (A)dd new project\n- (U)pdate project\n- (Q)uit")
 
 
 def display_projects(projects, show_index=False):
+    """Display projects from memory"""
     if not isinstance(projects, list):  # If projects only contains one project, convert it to a list
         projects = [projects]
     projects.sort()  # Sort projects by priority
     for i, project in enumerate(projects):
         index_string = f"{i} " if show_index else ""
-        print(f"{index_string}{project.name}, start: {project.start_date}, priority {project.priority}, "
-              f"estimate: ${project.estimated_cost}, completion: {project.percent_complete}%")
+        print(f"{index_string}{project}")
 
 
 def split_projects_by_completion(projects):
+    """Split projects into two lists (complete_projects and incomplete_projects) based on completion"""
     complete_projects = []
     incomplete_projects = []
     for project in projects:
