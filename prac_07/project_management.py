@@ -26,7 +26,8 @@ def main():
             load_projects(projects, file_name)
 
         elif user_input == "S":  # Save projects to .txt file
-            pass
+            file_name = input("Enter filename to save data to: ")
+            save_projects(projects, file_name)
 
         elif user_input == "D":  # Display projects
             complete_projects, incomplete_projects = split_projects_by_completion(projects)
@@ -51,24 +52,30 @@ def main():
             display_projects(projects, True)
             project_choice = get_valid_positive_number("Project choice: ", int)
             display_projects(projects[project_choice])
-            new_percentage = get_valid_positive_number("New Percentage: ", int)
-            new_priority = get_valid_positive_number("New Priority: ", int)
-            projects[project_choice].percent_complete = new_percentage
-            projects[project_choice].priority = new_priority
+            new_percentage = get_valid_positive_number("New Percentage: ", int, True, True)
+            new_priority = get_valid_positive_number("New Priority: ", int, True, )
+            if new_percentage:
+                projects[project_choice].percent_complete = new_percentage
+            if new_priority:
+                projects[project_choice].priority = new_priority
 
         else:
             print("Invalid input")
 
         display_menu()
         user_input = input(">>> ").upper()
+    if input("Would you like to save to projects.txt? ").upper() in ("Y", "YES"):
+        save_projects(DEFAULT_FILE_NAME, projects)
+        print("Projects saved")
+    print("Thank you for using custom-built project management software")
 
 
 def add_project(projects):
     name = input("Let's add a new project\nName: ")
     start_date = get_valid_date("Start date(dd/mm/yy): ")
     priority = get_valid_positive_number("Priority: ", int)
-    cost_estimate = get_valid_positive_number("Cost estimate: $", float)
-    percent_complete = get_valid_positive_number("Percent complete: ", int)
+    cost_estimate = get_valid_positive_number("Cost estimate: $", float, False, True)
+    percent_complete = get_valid_positive_number("Percent complete: ", int, False, True)
     projects.append(Project(name, start_date, priority, cost_estimate, percent_complete))
 
 
@@ -83,6 +90,17 @@ def load_projects(projects, file_name, skip_header=True):
             parts[3] = float(parts[3])
             parts[4] = int(parts[4])
             projects.append(Project(*parts))
+
+
+def save_projects(projects, file_name,
+                  header=("Name", "Start Date", "Priority", "Cost Estimate", "Completion Percentage")):
+    """Save projects to text file with default header"""
+    with open(file_name, "w") as out_file:
+        out_file.write("\t".join(header) + "\n")
+        for project in projects:
+            line = (f"{project.name}\t{project.start_date.strftime("%d/%m/%Y")}\t{project.priority}"
+                    f"\t{project.estimated_cost}\t{project.percent_complete}\n")
+            out_file.write(line)
 
 
 def display_menu():
@@ -104,7 +122,6 @@ def split_projects_by_completion(projects):
     complete_projects = []
     incomplete_projects = []
     for project in projects:
-        print(project.percent_complete)
         if project.is_complete():
             complete_projects.append(project)
         else:
@@ -112,13 +129,16 @@ def split_projects_by_completion(projects):
     return complete_projects, incomplete_projects
 
 
-def get_valid_positive_number(print_message, number_type):
-    """Get a valid number from the user."""
+def get_valid_positive_number(print_message, number_type, return_blank=False, is_0_valid=False):
+    """Get a valid number of a type from the user. Return None, when return_blank is True"""
     is_valid_input = False
     while not is_valid_input:
         try:
-            number = number_type(input(print_message))
-            if number > 0:
+            user_input = input(print_message)
+            if user_input == "" and return_blank:
+                return None
+            number = number_type(user_input)
+            if number > 0 or is_0_valid:
                 is_valid_input = True
             else:
                 print("Number must be > 0")
@@ -127,12 +147,12 @@ def get_valid_positive_number(print_message, number_type):
     return number  # no problem with reference before assignment
 
 
-def get_valid_date(print_message, date_format="%d/%m/%Y"):
+def get_valid_date(print_message, date_format="%d/%m/%y"):
     """Get a valid date from user"""
     is_valid_date = False
     while not is_valid_date:
         try:
-            date = datetime.datetime.strptime(input(print_message), "%d/%m/%Y").date()
+            date = datetime.datetime.strptime(input(print_message), date_format).date()
             is_valid_date = True
         except ValueError:
             print("Invalid date")
