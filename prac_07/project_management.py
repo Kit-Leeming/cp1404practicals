@@ -6,6 +6,7 @@ import datetime
 from prac_07.project import Project
 
 DEFAULT_FILE_NAME = "projects.txt"
+REMOVE_EXISTING_PROJECTS_ON_LOAD = False
 
 
 def main():
@@ -18,9 +19,14 @@ def main():
 
     while user_input != "Q":
         if user_input == "L":
-            pass
+            file_name = input("Enter filename to load data from: ")
+            if REMOVE_EXISTING_PROJECTS_ON_LOAD:
+                projects = []
+            load_projects(projects, file_name)
+
         elif user_input == "S":
             pass
+
         elif user_input == "D":
             complete_projects, incomplete_projects = split_projects_by_completion(projects)
             print("Incomplete projects:")
@@ -28,17 +34,30 @@ def main():
             if len(complete_projects) != 0:  # Check if there are completed projects
                 print("Complete projects: ")
                 display_projects(complete_projects)
+
         elif user_input == "F":
             pass
+
         elif user_input == "A":
-            pass
+            add_project(projects)
+
         elif user_input == "U":
             pass
+
         else:
             print("Invalid input")
 
         display_menu()
         user_input = input(">>> ").upper()
+
+
+def add_project(projects):
+    name = input("Let's add a new project\nName: ")
+    start_date = get_valid_date("Start date(dd/mm/yyyy): ")
+    priority = get_valid_positive_number("Priority: ", int)
+    cost_estimate = get_valid_positive_number("Cost estimate: $", float)
+    percent_complete = get_valid_positive_number("Percent complete: ", int)
+    projects.append(Project(name, start_date, priority, cost_estimate, percent_complete))
 
 
 def load_projects(projects, file_name, skip_header=True):
@@ -52,7 +71,6 @@ def load_projects(projects, file_name, skip_header=True):
             parts[3] = float(parts[3])
             parts[4] = int(parts[4])
             projects.append(Project(*parts))
-        # print(sorted(projects))
 
 
 def display_menu():
@@ -77,6 +95,33 @@ def split_projects_by_completion(projects):
         else:
             incomplete_projects.append(project)
     return complete_projects, incomplete_projects
+
+
+def get_valid_positive_number(print_message, number_type):
+    """Get a valid number from the user."""
+    is_valid_input = False
+    while not is_valid_input:
+        try:
+            number = number_type(input(print_message))
+            if number > 0:
+                is_valid_input = True
+            else:
+                print("Number must be > 0")
+        except ValueError:
+            print("Invalid input - please enter a valid number")
+    return number  # no problem with reference before assignment
+
+
+def get_valid_date(print_message, date_format="%d/%m/%Y"):
+    """Get a valid date from user"""
+    is_valid_date = False
+    while not is_valid_date:
+        try:
+            date = datetime.datetime.strptime(input(print_message), "%d/%m/%Y").date()
+            is_valid_date = True
+        except ValueError:
+            print("Invalid date")
+    return date  # no problem with reference before assignment
 
 
 main()
