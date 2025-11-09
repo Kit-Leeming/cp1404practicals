@@ -22,7 +22,14 @@ class Project:
     def __lt__(self, other):
         return self.priority < other.priority
 
+    def is_start_date_after(self, filter_date):
+        return self.start_date > filter_date
+
+    def is_complete(self):
+        return self.percent_complete == 100
+
 
 if __name__ == "__main__":
     project1 = Project("project1", "9/11/2025", 2, 5000, 5)
     print(project1)
+

@@ -18,16 +18,17 @@ def main():
     user_input = input(">>> ").upper()
 
     while user_input != "Q":
-        if user_input == "L":
+
+        if user_input == "L":  # Load new projects into memory
             file_name = input("Enter filename to load data from: ")
             if REMOVE_EXISTING_PROJECTS_ON_LOAD:
                 projects = []
             load_projects(projects, file_name)
 
-        elif user_input == "S":
+        elif user_input == "S":  # Save projects to .txt file
             pass
 
-        elif user_input == "D":
+        elif user_input == "D":  # Display projects
             complete_projects, incomplete_projects = split_projects_by_completion(projects)
             print("Incomplete projects:")
             display_projects(incomplete_projects)
@@ -36,13 +37,24 @@ def main():
                 display_projects(complete_projects)
 
         elif user_input == "F":
-            pass
+            filter_date = get_valid_date("Show projects that start after date (dd/mm/yy): ")
+            filtered_projects = []
+            for project in projects:
+                if project.is_start_date_after(filter_date):
+                    filtered_projects.append(project)
+            display_projects(filtered_projects)
 
         elif user_input == "A":
             add_project(projects)
 
         elif user_input == "U":
-            pass
+            display_projects(projects, True)
+            project_choice = get_valid_positive_number("Project choice: ", int)
+            display_projects(projects[project_choice])
+            new_percentage = get_valid_positive_number("New Percentage: ", int)
+            new_priority = get_valid_positive_number("New Priority: ", int)
+            projects[project_choice].percent_complete = new_percentage
+            projects[project_choice].priority = new_priority
 
         else:
             print("Invalid input")
@@ -53,7 +65,7 @@ def main():
 
 def add_project(projects):
     name = input("Let's add a new project\nName: ")
-    start_date = get_valid_date("Start date(dd/mm/yyyy): ")
+    start_date = get_valid_date("Start date(dd/mm/yy): ")
     priority = get_valid_positive_number("Priority: ", int)
     cost_estimate = get_valid_positive_number("Cost estimate: $", float)
     percent_complete = get_valid_positive_number("Percent complete: ", int)
@@ -78,10 +90,13 @@ def display_menu():
           f"- (A)dd new project\n- (U)pdate project\n- (Q)uit")
 
 
-def display_projects(projects):
+def display_projects(projects, show_index=False):
+    if not isinstance(projects, list):  # If projects only contains one project, convert it to a list
+        projects = [projects]
     projects.sort()  # Sort projects by priority
-    for project in projects:
-        print(f"{project.name}, start: {project.start_date}, priority {project.priority}, "
+    for i, project in enumerate(projects):
+        index_string = f"{i} " if show_index else ""
+        print(f"{index_string}{project.name}, start: {project.start_date}, priority {project.priority}, "
               f"estimate: ${project.estimated_cost}, completion: {project.percent_complete}%")
 
 
@@ -90,7 +105,7 @@ def split_projects_by_completion(projects):
     incomplete_projects = []
     for project in projects:
         print(project.percent_complete)
-        if project.percent_complete == 100:
+        if project.is_complete():
             complete_projects.append(project)
         else:
             incomplete_projects.append(project)
