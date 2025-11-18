@@ -2,7 +2,6 @@
 CP1404/CP5632 Practical
 Kivy GUI program to convert miles to km
 """
-from importlib.metadata import pass_none
 
 from kivy.app import App
 from kivy.lang import Builder
