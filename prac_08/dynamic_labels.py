@@ -2,6 +2,7 @@
 CP1404/CP5632 Practical
 Kivy GUI program to dynamically create labels
 """
+
 import random
 
 from kivy.app import App

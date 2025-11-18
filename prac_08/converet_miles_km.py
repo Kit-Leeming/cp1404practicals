@@ -21,6 +21,7 @@ class ConvertMilesKm(App):
         return self.root
 
     def handle_conversion(self):
+        """Convert miles to km from the text input field"""
         try:
             miles = float(self.root.ids.mile_text_input.text)
             km = MILES_TO_KM_COEFFICIENT * miles
@@ -29,6 +30,7 @@ class ConvertMilesKm(App):
             self.output_message = "0.0"
 
     def handle_increment_button(self, increment):
+        """Increment the text input field by +-1. If blank in invalid assume text input is 0"""
         try:
             miles = float(self.root.ids.mile_text_input.text)
             miles += increment
