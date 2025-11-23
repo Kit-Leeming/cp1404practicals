@@ -24,4 +24,3 @@ class Band:
     def play(self):
         """Print what each member of the band is playing"""
         return "\n".join(musician.play() for musician in self.musicians)
-

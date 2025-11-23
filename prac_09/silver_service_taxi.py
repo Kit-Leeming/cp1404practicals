@@ -11,6 +11,7 @@ class SilverServiceTaxi(Taxi):
     flagfall = 4.50
 
     def __init__(self, name: str, fuel: int, fanciness: float):
+        """Initialise a SilverServerTaxi object"""
         super().__init__(name, fuel)
         self.fanciness = fanciness
         self.price_per_km = Taxi.price_per_km * fanciness
@@ -20,4 +21,5 @@ class SilverServiceTaxi(Taxi):
         return f"{super().__str__()}, plus flagfall of ${self.flagfall}"
 
     def get_fare(self):
+        """Get the fare price from the current fare"""
         return super().get_fare() + self.flagfall
